@@ -193,9 +193,6 @@ class LibraryReport(BaseService):
             Loan.return_date == None
          ).all()
 
-         if not loans:
-            raise ValueError("There are no overdue books")
-
          return [
             {
                "id": loan.book.id,
