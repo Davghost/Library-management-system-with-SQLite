@@ -6,10 +6,10 @@ Session = sessionmaker(bind=engine)
 
 class ReaderService(BaseService):
    @staticmethod
-   def register(name:str):
+   def register(readers_name:str):
       session = Session()
       try:
-         reader = Reader(name=name)
+         reader = Reader(name=readers_name)
          return ReaderService.create(session, reader)
       finally:
          #print("reader added successfully")
