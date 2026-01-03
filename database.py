@@ -189,7 +189,7 @@ class LibraryReport(BaseService):
          overdue_threshold = date.today() - timedelta(days=30)
 
          loans = session.query(Loan).filter(
-            Loan.loan_date >= overdue_threshold,
+            Loan.loan_date <= overdue_threshold,
             Loan.return_date == None
          ).all()
 
