@@ -75,7 +75,7 @@ class BookService(BaseService):
    def delete(book_id:int):
       session = Session()
       try:
-         book = session.get(Reader, book_id)
+         book = session.get(Book, book_id)
          if book is None:
             raise ValueError("Book not found")
          
@@ -149,7 +149,7 @@ class LibraryService():
          if loan is None:
             raise ValueError("No active loan found for this book")
          
-         Loan.return_date = date.today()
+         loan.return_date = date.today()
          BaseService.update(session)
 
          return loan
