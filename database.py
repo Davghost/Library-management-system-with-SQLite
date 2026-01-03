@@ -9,7 +9,7 @@ class ReaderService(BaseService):
    def register(readers_name:str):
       session = Session()
       try:
-         reader = Reader(name=readers_name)
+         reader = Reader(readers_name=readers_name)
          return ReaderService.create(session, reader)
       finally:
          #print("reader added successfully")
@@ -68,6 +68,18 @@ class BookService(BaseService):
 
          BaseService.update(session)
          return book
+      finally:
+         session.close()
+
+   @staticmethod
+   def delete(book_id:int):
+      session = Session()
+      try:
+         book = session.get(Reader, book_id)
+         if book is None:
+            raise ValueError("Book not found")
+         
+         BaseService.delete(session, book)
       finally:
          session.close()
       
