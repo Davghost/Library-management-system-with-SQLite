@@ -1,6 +1,6 @@
 from init_db import Reader, Book, Loan, engine, BaseService
 from sqlalchemy.orm import sessionmaker
-from datetime import date
+from datetime import date, timedelta
 
 Session = sessionmaker(bind=engine)
 
@@ -154,5 +154,55 @@ class LibraryService():
 
          return loan
       
+      finally:
+         session.close()
+
+class LibraryReport(BaseService):
+   @staticmethod
+   def get_currently_loaned_books(reader_id:int):
+      session = Session()
+      try:
+         if not session.get(Reader,reader_id):
+            raise ValueError("Reader not found")
+
+         loans = session.query(Loan).filter(
+            Loan.reader_id == reader_id,
+            Loan.return_date == None
+         ).all()
+
+         return [
+            {
+               "id": loan.book.id,
+               "title": loan.book.title,
+               "author": loan.book.author,
+               "loan_date": loan.loan_date
+            }
+            for loan in loans
+         ]
+      finally:
+         session.close()
+   
+   @staticmethod
+   def get_overdue_books():
+      session = Session()
+      try:
+         overdue_threshold = date.today() - timedelta(days=30)
+
+         loans = session.query(Loan).filter(
+            Loan.loan_date >= overdue_threshold,
+            Loan.return_date == None
+         ).all()
+
+         if not loans:
+            raise ValueError("There are no overdue books")
+
+         return [
+            {
+               "id": loan.book.id,
+               "title": loan.book.title,
+               "reader_name": loan.reader.readers_name
+            }
+            for loan in loans
+         ]
       finally:
          session.close()

@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, UnicodeText, Unicode, ForeignKey, Date
+from sqlalchemy import create_engine, Column, Integer, UnicodeText, Unicode, ForeignKey, Date, relationship
 from datetime import date
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.exc import SQLAlchemyError
@@ -68,5 +68,8 @@ class Loan(Base):
    reader_id = Column(Integer, ForeignKey("reader.id"), nullable=False)
    loan_date = Column(Date, default=date.today, nullable=False)
    return_date = Column(Date, nullable=True)
+
+   book = relationship("Book")
+   reader = relationship("Reader")
 
 Base.metadata.create_all(engine)
