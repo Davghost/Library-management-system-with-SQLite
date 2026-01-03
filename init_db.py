@@ -1,6 +1,6 @@
-from sqlalchemy import create_engine, Column, Integer, UnicodeText, Unicode, ForeignKey, Date, relationship
+from sqlalchemy import create_engine, Column, Integer, UnicodeText, Unicode, ForeignKey, Date
 from datetime import date
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, relationship
 from sqlalchemy.exc import SQLAlchemyError
 import os
 

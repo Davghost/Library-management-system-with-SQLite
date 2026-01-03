@@ -86,7 +86,8 @@ class BookService(BaseService):
 class StructuredDataReturn():
    @staticmethod
    def return_all_readers():
-      with Session(engine) as session:
+      session = Session()
+      try:
          readers = session.query(Reader).all()
 
          return [
@@ -96,10 +97,13 @@ class StructuredDataReturn():
             }
             for reader in readers
          ]
+      finally:
+         session.close()
    
    @staticmethod
    def return_all_books():
-      with Session(engine) as session:
+      session = Session()
+      try:
          books = session.query(Book).all()
          return [
              {
@@ -109,8 +113,53 @@ class StructuredDataReturn():
              }
              for book in books
          ]
+      finally:
+         session.close()
 
 class LibraryService():
+   @staticmethod
+   def get_reader(reader_id:int):
+      session = Session()
+      try:
+         reader = session.get(Reader, reader_id)
+         if reader is None:
+            raise ValueError("Type correct reader id")
+         return reader
+      finally:
+         session.close()
+
+   @staticmethod
+   def reader_exists(reader_id: int) -> bool:
+      session = Session()
+      try:
+         rdd = session.query(Reader).filter(
+            Reader.id == reader_id,
+         ).first()
+         return rdd is not None
+      finally:
+         session.close()
+
+   @staticmethod
+   def reader_name_exists(name: str) -> bool:
+      session = Session()
+      try:
+         return session.query(Reader).filter(
+            Reader.readers_name == name
+         ).first() is not None
+      finally:
+         session.close()
+
+   @staticmethod
+   def get_book(book_id:int):
+      session = Session()
+      try:
+         book = session.get(Book, book_id)
+         if book is None:
+            return "Type correct book id"
+         return book
+      finally:
+         session.close()
+
    @staticmethod
    def loan(book_id:int, reader_id:int):
       session = Session()
@@ -202,4 +251,4 @@ class LibraryReport(BaseService):
             for loan in loans
          ]
       finally:
-         session.close()
+         session.clo
